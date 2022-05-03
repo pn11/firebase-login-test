@@ -4,13 +4,14 @@
     <p v-if="!isLoggedIn">You are {{loginMessage}}.</p>
     <p v-if="isLoggedIn">Welcome, {{userName}}!</p>
     <img v-if="isLoggedIn" v-bind:src="userImageURL">
-    <button v-if="!isLoggedIn" @click="login">Login</button>
+    <button v-if="!isLoggedIn" @click="twitterLogin">Twitter でログイン</button>
+    <button v-if="!isLoggedIn" @click="anonymousLogin">匿名でログイン</button>
   </div>
 </template>
 
 <script>
 //import firebase from 'firebase'
-import { getAuth, signInWithPopup, TwitterAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, TwitterAuthProvider, signInAnonymously} from "firebase/auth";
 
 export default {
   name: 'Login',
@@ -32,7 +33,7 @@ export default {
     }
   },
   methods: {
-    login() {
+    twitterLogin() {
       const auth = getAuth();
       const provider = new TwitterAuthProvider()
       signInWithPopup(auth, provider)
@@ -62,7 +63,20 @@ export default {
           // ...
           console.log(errorCode, errorMessage, email, credential)
         });
-      }
+    },
+    anonymousLogin(){
+      const auth = getAuth();
+      signInAnonymously(auth)
+        .then(() => {
+        // Signed in..
+        })
+        .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+        console.log(errorCode, errorMessage)
+        });
+    }
   }
 }
 </script>
